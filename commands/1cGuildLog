@@ -1,0 +1,35 @@
+const Discord = require('discord.js')
+const db = require(`quick.db`)
+const moment = require(`moment`)
+const colours = require(`../colours.json`)
+
+module.exports.run = async (client, message, args) => {
+    var newChannel = message.mentions.channels.first()
+    let cEmbed = new Discord.MessageEmbed()
+    .setColor(colours.orange)
+    .setAuthor(message.author.username, message.author.displayAvatarURL())
+    .setFooter(`DiamantBot | © Diamant#9542 | ${moment.utc().format(`DD MMMM HH:mm`)}`, client.user.displayAvatarURL());
+    
+    if(!message.member.hasPermission("ADMINISTRATOR")){
+        cEmbed.setDescription(`❌ You do not have permissions to manage channels. Please contact a staff member`)
+        return message.channel.send({embed: cEmbed})
+    } else if (!message.guild.me.hasPermission("ADMINISTRATOR")) {
+        bEmbed.setDescription("❌ I do not have permissions to manage channels. Please contact a staff member")
+        return message.channel.send({embed: cEmbed})
+    } else if(!newChannel) {
+        cEmbed.setDescription(`Please mention a text channel!`)
+        return message.channel.send({embed: cEmbed})
+    } else if(newChannel){
+        db.set(`${message.guild.id}_joinGuildLog`, newChannel.id)
+        cEmbed.setDescription(`My log channel is changed as #${newChannel}`)
+        return message.channel.send({embed: cEmbed})
+    }
+};
+
+module.exports.config =  {
+    name: `logchannel`,
+    description: `Using for change bot's log channel!`,
+    usage: `logchannel (#channel)`,
+    accessableby: `Owners`,
+    aliases: []
+};
